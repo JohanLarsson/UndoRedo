@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UndoRedo", "UndoRedo\UndoRedo.csproj", "{1E76D7CF-97A5-49FA-BD3D-086A8DB4589C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UndoRedoTests", "UndoRedo\UndoRedoTests\UndoRedoTests.csproj", "{84361898-7C44-441E-ACA8-8F0967F9522E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E76D7CF-97A5-49FA-BD3D-086A8DB4589C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E76D7CF-97A5-49FA-BD3D-086A8DB4589C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E76D7CF-97A5-49FA-BD3D-086A8DB4589C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E76D7CF-97A5-49FA-BD3D-086A8DB4589C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84361898-7C44-441E-ACA8-8F0967F9522E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84361898-7C44-441E-ACA8-8F0967F9522E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84361898-7C44-441E-ACA8-8F0967F9522E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84361898-7C44-441E-ACA8-8F0967F9522E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
