@@ -4,6 +4,7 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
+    using System.Windows.Input;
 
     public class UndoManager
     {
@@ -62,7 +63,10 @@
 
         #endregion
 
-
+        //          <Grid Background="#feca00" >
+        //<undo:UndoManager.SharedUndoRedoScope>
+        //  <undo:UndoManager />
+        //</undo:UndoManager.SharedUndoRedoScope>
 
         void TextChangedHandler(object sender, TextChangedEventArgs e)
         {

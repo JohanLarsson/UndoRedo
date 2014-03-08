@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UndoRedo
+﻿namespace UndoRedo
 {
-    class Class1
+    using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
+
+    public class UndoOperation
     {
+        public TextBoxBase Sender;
+        public UndoAction Action;
+
+        public UndoOperation(TextBoxBase sender, UndoAction action)
+        {
+            this.Sender = sender;
+            this.Action = action;
+        }
     }
 }
