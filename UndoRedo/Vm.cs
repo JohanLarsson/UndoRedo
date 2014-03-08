@@ -6,19 +6,34 @@
 
     public class Vm : INotifyPropertyChanged
     {
-        private string _value;
+        private string _value1;
+        private string _value2;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public string Value
+        public string Value1
         {
-            get { return _value; }
+            get { return _value1; }
             set
             {
-                if (value == _value)
+                if (value == _value1)
                 {
                     return;
                 }
-                _value = value;
+                _value1 = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Value2
+        {
+            get { return _value2; }
+            set
+            {
+                if (value == _value2)
+                {
+                    return;
+                }
+                _value2 = value;
                 OnPropertyChanged();
             }
         }

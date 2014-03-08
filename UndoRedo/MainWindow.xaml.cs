@@ -8,6 +8,7 @@
     using System.Reactive.Linq;
     using System.Reflection;
     using System.Windows;
+    using System.Windows.Input;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -21,12 +22,33 @@
         {
             InitializeComponent();
             _propertyInfos = _vm.GetType().GetProperties().ToDictionary(x => x.Name, x => x);
+            foreach (var propertyInfo in _propertyInfos)
+            {
+                _history.Push(new HistoryPoint(_vm, propertyInfo.Value));
+            }
             DataContext = _vm;
             var observable = Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                 x => _vm.PropertyChanged += x,
                 x => _vm.PropertyChanged -= x);
-            observable.Subscribe(x => _history.Push(new HistoryPoint(x.Sender,_propertyInfos[x.EventArgs.PropertyName])))
+            observable.Subscribe(x => _history.Push(new HistoryPoint((INotifyPropertyChanged)x.Sender, _propertyInfos[x.EventArgs.PropertyName])));
         }
-
+        private void Undo_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            HistoryPoint historyPoint = _history.Pop();
+            historyPoint.Undo();
+            _history.Pop();
+        }
+        private void Undo_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _history.Count > _propertyInfos.Count;
+        }
+        private void Redo_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+        private void Redo_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = false;
+        }
     }
 }
