@@ -6,8 +6,9 @@
 
     public class Dto : INotifyPropertyChanged
     {
-                private string _value1;
+        private string _value1;
         private string _value2;
+        private bool? _isChecked;
 
         public Dto()
         {
@@ -15,7 +16,6 @@
             Value2 = "OriginalValue";
         }
         public event PropertyChangedEventHandler PropertyChanged;
-
         public string Value1
         {
             get { return _value1; }
@@ -29,7 +29,6 @@
                 OnPropertyChanged();
             }
         }
-
         public string Value2
         {
             get { return _value2; }
@@ -40,6 +39,16 @@
                     return;
                 }
                 _value2 = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool? IsChecked
+        {
+            get { return _isChecked; }
+            set
+            {
+                if (value.Equals(_isChecked)) return;
+                _isChecked = value;
                 OnPropertyChanged();
             }
         }

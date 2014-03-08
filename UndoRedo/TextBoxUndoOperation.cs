@@ -4,9 +4,9 @@
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
 
-    public class UndoOperation
+    public class TextBoxUndoOperation : IUndoOperation
     {
-        public UndoOperation(TextBoxBase sender, UndoAction action)
+        public TextBoxUndoOperation(TextBoxBase sender, UndoAction action)
         {
             Sender = sender;
             Action = action;
@@ -15,5 +15,13 @@
         public TextBoxBase Sender { get; private set; }
         public UndoAction Action { get; private set; }
         public DateTime Timestamp { get; private set; }
+        public void Undo()
+        {
+            if (Action != UndoAction.Undo)
+                Sender.Undo();
+            else if (Action != UndoAction.Redo)
+                Sender.Redo();
+            Sender.Focus();
+        }
     }
 }

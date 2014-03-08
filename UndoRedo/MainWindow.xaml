@@ -13,6 +13,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -23,6 +24,8 @@
                 <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Value1}"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Value2"/>
                 <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Value2}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="IsChecked" Margin="0,0,10,0"/>
+                <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding IsChecked}" VerticalAlignment="Center"/>
             </Grid>
         </DataTemplate>
     </Window.Resources>
