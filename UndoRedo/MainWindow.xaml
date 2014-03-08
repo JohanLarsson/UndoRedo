@@ -7,12 +7,35 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525"
         d:DataContext="{d:DesignInstance undoRedo:Vm}">
-    <Window.CommandBindings>
-        <CommandBinding Command="Undo" Executed="Undo_Executed" CanExecute="Undo_CanExecute" />
-        <CommandBinding Command="Redo" Executed="Redo_Executed" CanExecute="Redo_CanExecute" />
-    </Window.CommandBindings>
-    <StackPanel>
-        <TextBox Text="{Binding Value1}" IsUndoEnabled="False"/>
-        <TextBox Text="{Binding Value2}" IsUndoEnabled="False"/>
-    </StackPanel>
+    <Window.Resources>
+        <DataTemplate x:Key="DtoTemplate" DataType="{x:Type undoRedo:Dto}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Value1"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Value1}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Value2"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Value2}"/>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    <WrapPanel>
+        <GroupBox Header="Group1" undoRedo:UndoManager.UndoScopeName="Group1">
+            <ContentPresenter Content="{Binding Dto1}" ContentTemplate="{StaticResource DtoTemplate}"/>
+        </GroupBox>
+        <GroupBox Header="Group2" undoRedo:UndoManager.UndoScopeName="Group2">
+            <ContentPresenter Content="{Binding Dto2}" ContentTemplate="{StaticResource DtoTemplate}"/>
+        </GroupBox>
+        <GroupBox Header="Group1 (Shared Scope)" undoRedo:UndoManager.UndoScopeName="Group1">
+            <ContentPresenter Content="{Binding Dto3}" ContentTemplate="{StaticResource DtoTemplate}"/>
+        </GroupBox>
+    </WrapPanel>
+
 </Window>

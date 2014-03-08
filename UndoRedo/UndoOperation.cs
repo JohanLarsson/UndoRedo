@@ -1,17 +1,19 @@
 ﻿namespace UndoRedo
 {
+    using System;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
 
     public class UndoOperation
     {
-        public TextBoxBase Sender;
-        public UndoAction Action;
-
         public UndoOperation(TextBoxBase sender, UndoAction action)
         {
-            this.Sender = sender;
-            this.Action = action;
+            Sender = sender;
+            Action = action;
+            Timestamp = DateTime.UtcNow;
         }
+        public TextBoxBase Sender { get; private set; }
+        public UndoAction Action { get; private set; }
+        public DateTime Timestamp { get; private set; }
     }
 }

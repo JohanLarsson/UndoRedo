@@ -1,78 +1,80 @@
 ﻿namespace UndoRedo
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Input;
+    using System.Windows.Media;
 
     public class UndoManager
     {
-        Stack<UndoOperation> undoStack = new Stack<UndoOperation>();
-        Stack<UndoOperation> redoStack = new Stack<UndoOperation>();
+        readonly Stack<UndoOperation> _undoStack = new Stack<UndoOperation>();
+        readonly Stack<UndoOperation> _redoStack = new Stack<UndoOperation>();
+        private static Dictionary<string, UndoManager> _undoManagers = new Dictionary<string, UndoManager>();
+        public static readonly DependencyProperty UndoScopeNameProperty = DependencyProperty.RegisterAttached(
+            "UndoScopeName",
+            typeof(string),
+            typeof(UndoManager),
+                new FrameworkPropertyMetadata(
+                    "",
+                    FrameworkPropertyMetadataOptions.Inherits, OnUseGlobalUndoRedoScopeChanged));
 
-        #region Dependency Properties
-        public static readonly DependencyProperty SharedUndoRedoScopeProperty =
-            DependencyProperty.RegisterAttached("SharedUndoRedoScope", typeof(UndoManager), typeof(UndoManager),
-                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits, new PropertyChangedCallback(OnUseGlobalUndoRedoScopeChanged)));
-
-        public static void SetSharedUndoRedoScope(DependencyObject depObj, bool isSet)
+        public static void SetUndoScopeName(DependencyObject o, string name)
         {
-            // never place logic in here, because these methods are not called when things are done in XAML
-            depObj.SetValue(SharedUndoRedoScopeProperty, isSet);
+            o.SetValue(UndoScopeNameProperty, name);
         }
-
-        public static UndoManager GetSharedUndoRedoScope(DependencyObject depObj)
+        public static string GetUndoScopeName(DependencyObject o)
         {
-            // never place logic in here, because these methods are not called when things are done in XAML
-            return depObj.GetValue(SharedUndoRedoScopeProperty) as UndoManager;
+            return (string)o.GetValue(UndoScopeNameProperty);
         }
-
-        private static void OnUseGlobalUndoRedoScopeChanged(DependencyObject depObj, DependencyPropertyChangedEventArgs args)
+        private static void OnUseGlobalUndoRedoScopeChanged(DependencyObject o, DependencyPropertyChangedEventArgs args)
         {
-            if (depObj is TextBoxBase)
+            UndoManager mgr;
+            var scopeName = (string)args.NewValue;
+            if (!_undoManagers.TryGetValue(scopeName, out mgr))
             {
-                if (args.OldValue != null)
-                {
-                    RemoveEventHandlers(depObj as TextBoxBase, args.OldValue as UndoManager);
-                }
-                if (args.NewValue != null)
-                {
-                    AttachEventHandlers(depObj as TextBoxBase, args.NewValue as UndoManager);
-                }
+                mgr = new UndoManager();
+                _undoManagers.Add(scopeName, mgr);
+            }
+            var uiElement = o as UIElement;
+            if (uiElement != null)
+            {
+                ((UIElement)o).AddHandler(CommandManager.PreviewExecutedEvent, new ExecutedRoutedEventHandler(mgr.ExecutedHandler));
+                ((UIElement)o).AddHandler(CommandManager.PreviewCanExecuteEvent, new CanExecuteRoutedEventHandler(mgr.CanExecuteHandler));
+            }
+            var box = o as TextBoxBase;
+            if (box != null)
+            {
+                AttachEventHandlers(box, mgr);
             }
         }
 
         private static void AttachEventHandlers(TextBoxBase textBox, UndoManager manager)
         {
-            if (textBox != null && manager != null)
-            {
-                textBox.AddHandler(CommandManager.PreviewExecutedEvent, new ExecutedRoutedEventHandler(manager.ExecutedHandler), true); // we need to see all events to subvert the built-in undo/redo tracking in the text boxes
-                textBox.TextChanged += new TextChangedEventHandler(manager.TextChangedHandler);
-            }
+            textBox.TextChanged += manager.TextChangedHandler;
         }
-
-        private static void RemoveEventHandlers(TextBoxBase textBox, UndoManager manager)
-        {
-            if (textBox != null && manager != null)
-            {
-                textBox.RemoveHandler(CommandManager.PreviewExecutedEvent, new ExecutedRoutedEventHandler(manager.ExecutedHandler));
-                textBox.TextChanged -= new TextChangedEventHandler(manager.TextChangedHandler);
-            }
-        }
-
-        #endregion
-
-        //          <Grid Background="#feca00" >
-        //<undo:UndoManager.SharedUndoRedoScope>
-        //  <undo:UndoManager />
-        //</undo:UndoManager.SharedUndoRedoScope>
-
         void TextChangedHandler(object sender, TextChangedEventArgs e)
         {
             this.AddUndoableAction(sender as TextBoxBase, e.UndoAction);
         }
+        private void CanExecuteHandler(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (e.Command == ApplicationCommands.Undo)
+            {
+                e.CanExecute = _undoStack.Any();
+                e.Handled = true;
+            }
 
+            if (e.Command == ApplicationCommands.Redo)
+            {
+                e.CanExecute = _redoStack.Any();
+                e.Handled = true;
+            }
+
+        }
         private void ExecutedHandler(object sender, ExecutedRoutedEventArgs e)
         {
             if (e.Command == ApplicationCommands.Undo)
@@ -87,59 +89,33 @@
                 Redo();
             }
         }
-
         private void AddUndoableAction(TextBoxBase sender, UndoAction action)
         {
             if (action == UndoAction.Undo)
             {
-                redoStack.Push(new UndoOperation(sender, action));
+                _redoStack.Push(new UndoOperation(sender, action));
+            }
+            else if (action == UndoAction.Redo)
+            {
+                _undoStack.Push(new UndoOperation(sender, action));
             }
             else
             {
-                if (undoStack.Count > 0)
-                {
-                    UndoOperation op = undoStack.Peek();
-                    if ((op.Sender == sender) && (action == UndoAction.Merge))
-                    {
-                        // no-op
-                    }
-                    else
-                    {
-                        PushUndoOperation(sender, action);
-                    }
-                }
-                else
-                {
-                    PushUndoOperation(sender, action);
-                }
+                _undoStack.Push(new UndoOperation(sender, action));
+                _redoStack.Clear();
             }
         }
-
-        private void PushUndoOperation(TextBoxBase sender, UndoAction action)
-        {
-            undoStack.Push(new UndoOperation(sender, action));
-            System.Diagnostics.Debug.WriteLine("PUSHED");
-        }
-
         public void Undo()
         {
-
-            if (undoStack.Count > 0)
-            {
-                UndoOperation op = undoStack.Pop();
-                op.Sender.Undo();
-                op.Sender.Focus();
-            }
+            UndoOperation op = _undoStack.Pop();
+            op.Sender.Undo();
+            op.Sender.Focus();
         }
-
         public void Redo()
         {
-            if (redoStack.Count > 0)
-            {
-                UndoOperation op = redoStack.Pop();
-                op.Sender.Redo();
-                op.Sender.Focus();
-            }
+            UndoOperation op = _redoStack.Pop();
+            op.Sender.Redo();
+            op.Sender.Focus();
         }
     }
 }

@@ -4,48 +4,16 @@
     using System.Runtime.CompilerServices;
     using Annotations;
 
-    public class Vm : INotifyPropertyChanged
+    public class Vm 
     {
-        private string _value1;
-        private string _value2;
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public string Value1
+        public Vm()
         {
-            get { return _value1; }
-            set
-            {
-                if (value == _value1)
-                {
-                    return;
-                }
-                _value1 = value;
-                OnPropertyChanged();
-            }
+            Dto1 = new Dto();
+            Dto2 = new Dto();
+            Dto3 = new Dto();
         }
-
-        public string Value2
-        {
-            get { return _value2; }
-            set
-            {
-                if (value == _value2)
-                {
-                    return;
-                }
-                _value2 = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        public Dto Dto1 { get; private set; }
+        public Dto Dto2 { get; private set; }
+        public Dto Dto3 { get; private set; }
     }
 }

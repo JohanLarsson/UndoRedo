@@ -65,8 +65,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dto.cs" />
     <Compile Include="UndoOperation.cs" />
-    <Compile Include="HistoryPoint.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="UndoManager.cs" />
     <Compile Include="Vm.cs" />
