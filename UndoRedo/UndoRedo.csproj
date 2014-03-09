@@ -65,12 +65,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\UndoManager.cs" />
     <Compile Include="Dto.cs" />
-    <Compile Include="IUndoOperation.cs" />
-    <Compile Include="TextBoxUndoOperation.cs" />
+    <Compile Include="View\IUndoOperation.cs" />
+    <Compile Include="View\TextBoxUndoOperation.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="ToggleButtonUndoOperation.cs" />
-    <Compile Include="UndoManager.cs" />
+    <Compile Include="View\ToggleButtonUndoOperation.cs" />
+    <Compile Include="View\UndoManager.cs" />
     <Compile Include="Vm.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -113,6 +114,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

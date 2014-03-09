@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:undoRedo="clr-namespace:UndoRedo"
+        xmlns:data="clr-namespace:UndoRedo.Data"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525"
         d:DataContext="{d:DesignInstance undoRedo:Vm}">
@@ -38,6 +39,11 @@
         </GroupBox>
         <GroupBox Header="Group1 (Shared Scope)" undoRedo:UndoManager.UndoScopeName="Group1">
             <ContentPresenter Content="{Binding Dto3}" ContentTemplate="{StaticResource DtoTemplate}"/>
+        </GroupBox>
+        <GroupBox Header="Group1 (Shared Scope)" 
+                  data:UndoManager.UndoScopeName="Data" 
+                  BorderBrush="Red">
+            <ContentPresenter Content="{Binding Dto4}" ContentTemplate="{StaticResource DtoTemplate}"/>
         </GroupBox>
     </WrapPanel>
 
