@@ -2,68 +2,31 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using System.Windows;
     using System.Windows.Controls;
+    using Annotations;
 
-    public class History
+    public class History : INotifyPropertyChanged
     {
         private readonly Stack<HistoryPoint> _undoStack = new Stack<HistoryPoint>();
         private readonly Stack<HistoryPoint> _redoStack = new Stack<HistoryPoint>();
-
-        public void Update(Control control, object value, DependencyProperty property, UpdateReason updateReason)
+        //private readonly Dictionary<Control, HistoryPoint> _currentvalues = new Dictionary<Control, HistoryPoint>();
+        public Stack<HistoryPoint> UndoStack
         {
-            if (HasHistory(control))
+            get
             {
-                var undoValue = UndoValue(control);
-                if (undoValue == value)
-                    return;
+                return _undoStack;
             }
-            _undoStack.Push(new HistoryPoint(control, value, property, updateReason));
-            _redoStack.Clear();
         }
-        public void Undo(Control control)
+        public Stack<HistoryPoint> RedoStack
         {
-            var undoValue = UndoValue(control);
-            var currentValue = CurrentValue(control);
-            var property = Property(control);
-            if (undoValue != currentValue)
+            get
             {
-                _redoStack.Push(new HistoryPoint(control, currentValue, property, UpdateReason.Undo));
-                control.SetCurrentValue(property, undoValue);
-                control.Focus();
-                return;
+                return _redoStack;
             }
-            var historyPoint = _undoStack.Pop();
-            _redoStack.Push(historyPoint);
-            var value = UndoValue(historyPoint.Control);
-            historyPoint.Control.SetCurrentValue(historyPoint.Property, value);
-            historyPoint.Control.Focus();
-        }
-        public void Redo(Control control)
-        {
-            var undoValue = UndoValue(control);
-            var currentValue = CurrentValue(control);
-            if (undoValue != currentValue)
-            {
-                _redoStack.Clear();
-                return;
-            }
-            var historyPoint = _redoStack.Pop();
-            _undoStack.Push(historyPoint);
-            historyPoint.Control.SetCurrentValue(historyPoint.Property, historyPoint.Value);
-            historyPoint.Control.Focus();
-        }
-        public bool CanUndo(Control control)
-        {
-            var undoValue = UndoValue(control);
-            if (undoValue != CurrentValue(control))
-                return true;
-            if (_undoStack.Any())
-            {
-                return _undoStack.Peek().UpdateReason != UpdateReason.FromData;
-            }
-            return false;
         }
         public bool CanRedo
         {
@@ -72,26 +35,73 @@
                 return _redoStack.Any();
             }
         }
-        private object CurrentValue(Control control)
+        public void Update(HistoryPoint historyPoint)
         {
-            return control.GetValue(Property(control));
+            var cv = _undoStack.FirstOrDefault(x => ReferenceEquals(x.Control, historyPoint.Control));
+            if (cv != null && Equals(cv.Value, historyPoint.Value))
+                return;
+            _undoStack.Push(historyPoint);
+            _redoStack.Clear();
+            OnPropertyChanged("");
         }
-        private DependencyProperty Property(Control control)
+        public void Update(Control historyPoint, object value, DependencyProperty property, UpdateReason userInput)
         {
-            var historyPoint = UndoPoint(control);
-            return historyPoint.Property;
+            Update(HistoryPoint.Create(historyPoint, value, property, userInput));
         }
-        private bool HasHistory(Control control)
+        public void Undo(Control control)
         {
-            return _undoStack.Any(x => ReferenceEquals(x.Control, control));
+            if (IsDirty(control))
+            {
+                var cv = _undoStack.First(x => ReferenceEquals(x.Control, control));
+                _redoStack.Push(HistoryPoint.Create(control, cv.CurrentValue, cv.Property, UpdateReason.Undo));
+                cv.Undo();
+            }
+            else
+            {
+                var historyPoint = _undoStack.Pop();
+                _redoStack.Push(historyPoint);
+                historyPoint.Undo();
+            }
+
+            OnPropertyChanged("");
         }
-        private HistoryPoint UndoPoint(Control control)
+        public void Redo(Control control)
         {
-            return _undoStack.First(x => ReferenceEquals(x.Control, control));
+            var hp = _redoStack.Pop();
+            hp.Redo();
+            OnPropertyChanged("");
         }
-        private object UndoValue(Control control)
+        public bool CanUndo(Control control)
         {
-            return UndoPoint(control).Value;
+            if (IsDirty(control))
+                return true;
+            if (_undoStack.Any())
+            {
+                var historyPoint = _undoStack.Peek();
+                return historyPoint.UpdateReason != UpdateReason.DataUpdated;
+            }
+            return false;
+        }
+        private bool IsDirty(Control control)
+        {
+            HistoryPoint up = _undoStack.FirstOrDefault(x => ReferenceEquals(x.Control, control));
+            if (up != null)
+            {
+                if (!Equals(up.Value, up.CurrentValue))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

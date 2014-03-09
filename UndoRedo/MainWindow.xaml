@@ -36,6 +36,7 @@
                 <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding EnumValues}" SelectedItem="{Binding SelectedDummyEnum}"/>
             </Grid>
         </DataTemplate>
+
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -63,20 +64,35 @@
         </WrapPanel>
         
         <ListBox Grid.Row="1" ItemsSource="{Binding UndoManagerVms}">
+            <ListBox.Resources>
+                <DataTemplate DataType="{x:Type data:HistoryPoint}">
+                    <GroupBox Header="{Binding Timestamp}" HeaderStringFormat="HistoryPoint {0:H:mm:ss}">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Control}"/>
+                            <TextBlock Text="{Binding UpdateReason}"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                </DataTemplate>
+            </ListBox.Resources>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type undoRedo:UndoManagerVm}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Name}"/>
-                            <TextBlock Text="{Binding Manager.History.CanUndo, StringFormat='Can undo: {0}'}"/>
-                            <TextBlock Text="{Binding Manager.History.CanRedo, StringFormat='Can redo: {0}'}"/>
+                    <GroupBox Header="{Binding Name}">
+                        <StackPanel Orientation="Horizontal">
+                            <GroupBox Header="UndoStack">
+                                <StackPanel>
+                                    <!--<TextBlock Text="{Binding Manager.History.CanUndo, StringFormat='Can undo: {0}'}"/>-->
+                                    <ListBox ItemsSource="{Binding UndoStack}"/>
+                                </StackPanel>
+                            </GroupBox>
+                            <GroupBox Header="RedoStack">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Manager.History.CanRedo, StringFormat='Can redo: {0}'}"/>
+                                    <ListBox ItemsSource="{Binding RedoStack}"/>
+                                </StackPanel>
+                            </GroupBox>
                         </StackPanel>
-                    </Grid>
-
+                    </GroupBox>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

@@ -1,28 +1,23 @@
 ﻿namespace UndoRedo.Data
 {
-    using System;
-    using System.Windows.Controls;
+    using System.Windows;
     using System.Windows.Controls.Primitives;
 
-    public class TextBoxHistoryPoint
+    public class TextBoxHistoryPoint : HistoryPoint
     {
-        public TextBoxHistoryPoint(TextBoxBase sender, UndoAction action)
+        public TextBoxHistoryPoint(TextBoxBase control, object value, DependencyProperty property, UpdateReason updateReason)
+            : base(control, value, property, updateReason)
         {
-            Sender = sender;
-            Action = action;
-            Timestamp = DateTime.UtcNow;
         }
-        public DateTime Timestamp { get; private set; }
-        public TextBoxBase Sender { get; private set; }
-        public UndoAction Action { get; private set; }
-
-        public void Undo()
+        public override void Undo()
         {
-            if (Action != UndoAction.Undo)
-                Sender.Undo();
-            else if (Action != UndoAction.Redo)
-                Sender.Redo();
-            Sender.Focus();
+            ((TextBoxBase)Control).Undo();
+            Control.Focus();
+        }
+        public override void Redo()
+        {
+            ((TextBoxBase)Control).Redo();
+            Control.Focus();
         }
     }
 }

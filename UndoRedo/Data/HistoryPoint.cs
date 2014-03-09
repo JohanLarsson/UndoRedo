@@ -3,9 +3,11 @@
     using System;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
+
     public class HistoryPoint
     {
-        public HistoryPoint(Control control, object value, DependencyProperty property, UpdateReason updateReason)
+        protected HistoryPoint(Control control, object value, DependencyProperty property, UpdateReason updateReason)
         {
             Timestamp = DateTime.UtcNow;
             Control = control;
@@ -16,7 +18,43 @@
         public DateTime Timestamp { get; private set; }
         public Control Control { get; private set; }
         public object Value { get; private set; }
-        public DependencyProperty Property { get; set; }
+        public object CurrentValue
+        {
+            get
+            {
+                return Control.GetValue(Property);
+            }
+        }
+        public DependencyProperty Property { get; private set; }
         public UpdateReason UpdateReason { get; private set; }
+        public static HistoryPoint Create(Control control, object value, DependencyProperty property, UpdateReason updateReason)
+        {
+            var textBoxBase = control as TextBoxBase;
+            if (textBoxBase != null)
+                return Create(textBoxBase, value, property, updateReason);
+            var toggleButton = control as ToggleButton;
+            if (toggleButton != null)
+                return new HistoryPoint(toggleButton, value, property, updateReason);
+            throw new NotImplementedException("message");
+
+        }
+        public static TextBoxHistoryPoint Create(TextBoxBase textBox, object value, DependencyProperty property, UpdateReason updateReason)
+        {
+            return new TextBoxHistoryPoint(textBox, value, property, updateReason);
+        }
+        public virtual void Undo()
+        {
+            Control.SetCurrentValue(Property, Value);
+            Control.Focus();
+        }
+        public virtual void Redo()
+        {
+            Control.SetCurrentValue(Property, Value);
+            Control.Focus();
+        }
+        public override string ToString()
+        {
+            return string.Format("Timestamp: {0}, Control: {1}", Timestamp, Control);
+        }
     }
 }

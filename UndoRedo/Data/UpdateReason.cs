@@ -3,7 +3,7 @@
     public enum UpdateReason
     {
         Unknown,
-        FromData,
+        DataUpdated,
         UserInput,
         Undo,
         Redo

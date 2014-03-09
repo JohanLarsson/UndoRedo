@@ -14,7 +14,7 @@
     {
         private readonly History _history = new History();
         private readonly List<Control> _controls = new List<Control>();
-        private static readonly Dictionary<string, UndoManager> UndoManagers = new Dictionary<string, UndoManager>();
+        internal static readonly Dictionary<string, UndoManager> UndoManagers = new Dictionary<string, UndoManager>();
         public static readonly DependencyProperty UndoScopeNameProperty = DependencyProperty.RegisterAttached(
             "UndoScopeName",
             typeof(string),
@@ -23,7 +23,13 @@
                     null,
                     FrameworkPropertyMetadataOptions.Inherits,
                     OnUseGlobalUndoRedoScopeChanged));
-
+        public History History
+        {
+            get
+            {
+                return _history;
+            }
+        }
         public static void SetUndoScopeName(DependencyObject o, string name)
         {
             o.SetValue(UndoScopeNameProperty, name);
@@ -72,7 +78,6 @@
                 toggleButton.DataContextChanged += (sender, _) => Subscribe((ToggleButton) sender, ToggleButton.IsCheckedProperty);
             }
         }
-
         private static void Subscribe(Control control, DependencyProperty property)
         {
             var binding = BindingOperations.GetBinding(control, property);
@@ -99,7 +104,7 @@
                     {
                         var undoManager = GetUndoManager(control);
                         var value = control.GetValue(property);
-                        undoManager._history.Update(control, value, property, UpdateReason.FromData);
+                        undoManager._history.Update(control, value, property, UpdateReason.DataUpdated);
                     }
                 };
             }

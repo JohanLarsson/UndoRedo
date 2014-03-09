@@ -16,8 +16,7 @@
             Dto2 = new Dto();
             Dto3 = new Dto();
             Dto4 = new Dto();
-            UndoManagerVms= new ObservableCollection<UndoManagerVm>(
-                View.UndoManager.UndoManagers.Select(x=>new UndoManagerVm(x.Key,x.Value)));
+            UndoManagerVms= new ObservableCollection<UndoManagerVm>(Data.UndoManager.UndoManagers.Select(x=>new UndoManagerVm(x.Key,x.Value)));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
