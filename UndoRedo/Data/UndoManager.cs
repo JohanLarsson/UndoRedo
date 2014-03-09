@@ -8,11 +8,12 @@
     using System.Windows.Controls.Primitives;
     using System.Windows.Data;
     using System.Windows.Input;
+    using View;
 
     public class UndoManager
     {
-        readonly Stack<IUndoOperation> _undoStack = new Stack<IUndoOperation>();
-        readonly Stack<IUndoOperation> _redoStack = new Stack<IUndoOperation>();
+        private readonly History _history = new History();
+        private readonly List<Control> _controls = new List<Control>();
         private static readonly Dictionary<string, UndoManager> UndoManagers = new Dictionary<string, UndoManager>();
         public static readonly DependencyProperty UndoScopeNameProperty = DependencyProperty.RegisterAttached(
             "UndoScopeName",
@@ -51,43 +52,78 @@
                 ((UIElement)o).AddHandler(CommandManager.PreviewExecutedEvent, new ExecutedRoutedEventHandler(manager.ExecutedHandler));
                 ((UIElement)o).AddHandler(CommandManager.PreviewCanExecuteEvent, new CanExecuteRoutedEventHandler(manager.CanExecuteHandler));
             }
-            Binding binding;
             var textBox = o as TextBox;
             if (textBox != null)
             {
+                manager._controls.Add(textBox);
                 if (textBox.IsInitialized)
                 {
-                    binding = BindingOperations.GetBinding(textBox, TextBox.TextProperty);
+                    // binding = BindingOperations.GetBinding(textBox, TextBox.TextProperty);
                 }
                 else
                 {
-                    textBox.Initialized += TextBoxOnInitialized;
+                    textBox.DataContextChanged += (sender, _) => Subscribe((TextBoxBase)sender, TextBox.TextProperty);
                 }
-                //textBox.TextChanged += (sender,e)=> manager.AddUndoableAction(new TextBoxUndoOperation((TextBoxBase)sender, e.UndoAction), e.UndoAction);
             }
             var toggleButton = o as ToggleButton;
             if (toggleButton != null)
             {
-                binding = BindingOperations.GetBinding(toggleButton, ToggleButton.IsCheckedProperty);
-                //toggleButton.Checked += (sender, e) => manager.AddUndoableAction(new TobbleButtonUndoOperation((ToggleButton)sender, e.UndoAction), e.UndoAction);
+                manager._controls.Add(toggleButton);
+                toggleButton.DataContextChanged += (sender, _) => Subscribe((ToggleButton) sender, ToggleButton.IsCheckedProperty);
             }
-
         }
-        private static void TextBoxOnInitialized(object sender, EventArgs eventArgs)
+
+        private static void Subscribe(Control control, DependencyProperty property)
         {
-           var binding = BindingOperations.GetBinding((TextBoxBase)sender, TextBox.TextProperty);
+            var binding = BindingOperations.GetBinding(control, property);
+            if (binding != null && binding.IsBoundToDataContext())
+            {
+                if (!binding.IsNotifiying())
+                {
+                    binding = binding.CreateNotifying(control.DataContext);
+                    BindingOperations.ClearBinding(control, property);
+                    BindingOperations.SetBinding(control, property, binding);
+                }
+                control.SourceUpdated += (o, args) =>
+                {
+                    if (args.Property == property)
+                    {
+                        var undoManager = GetUndoManager(control);
+                        var value = control.GetValue(property);
+                        undoManager._history.Update(control, value, property, UpdateReason.UserInput);
+                    }
+                };
+                control.TargetUpdated += (o, args) =>
+                {
+                    if (args.Property == property)
+                    {
+                        var undoManager = GetUndoManager(control);
+                        var value = control.GetValue(property);
+                        undoManager._history.Update(control, value, property, UpdateReason.FromData);
+                    }
+                };
+            }
+        }
+        private static UndoManager GetUndoManager(Control control)
+        {
+            foreach (var undoManager in UndoManagers)
+            {
+                if (undoManager.Value._controls.Any(x => ReferenceEquals(x, control)))
+                    return undoManager.Value;
+            }
+            throw new ArgumentOutOfRangeException("control", "No undomanager found for control");
         }
         private void CanExecuteHandler(object sender, CanExecuteRoutedEventArgs e)
         {
             if (e.Command == ApplicationCommands.Undo)
             {
-                e.CanExecute = _undoStack.Any();
+                e.CanExecute = _history.CanUndo((Control)e.OriginalSource);
                 e.Handled = true;
             }
 
             if (e.Command == ApplicationCommands.Redo)
             {
-                e.CanExecute = _redoStack.Any();
+                e.CanExecute = _history.CanRedo;
                 e.Handled = true;
             }
         }
@@ -95,41 +131,15 @@
         {
             if (e.Command == ApplicationCommands.Undo)
             {
-                Undo();
+                _history.Undo((Control)e.OriginalSource);
                 e.Handled = true;
             }
 
             if (e.Command == ApplicationCommands.Redo)
             {
-                Redo();
+                _history.Redo((Control)e.OriginalSource);
                 e.Handled = true;
             }
-        }
-        private void AddUndoableAction(IUndoOperation undoOperation, UndoAction action)
-        {
-            if (action == UndoAction.Undo)
-            {
-                _redoStack.Push(undoOperation);
-            }
-            else if (action == UndoAction.Redo)
-            {
-                _undoStack.Push(undoOperation);
-            }
-            else
-            {
-                _undoStack.Push(undoOperation);
-                _redoStack.Clear();
-            }
-        }
-        public void Undo()
-        {
-            IUndoOperation op = _undoStack.Pop();
-            op.Undo();
-        }
-        public void Redo()
-        {
-            IUndoOperation op = _redoStack.Pop();
-            op.Undo();
         }
     }
 }

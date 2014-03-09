@@ -1,4 +1,4 @@
-﻿namespace UndoRedo
+﻿namespace UndoRedo.View
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,6 @@
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Input;
-    using System.Windows.Media;
 
     public class UndoManager
     {
@@ -54,7 +53,10 @@
             var textBox = o as TextBoxBase;
             if (textBox != null)
             {
-                textBox.TextChanged += (sender,e)=> manager.AddUndoableAction(new TextBoxUndoOperation((TextBoxBase)sender, e.UndoAction), e.UndoAction);
+                textBox.TextChanged += (sender, e) =>
+                {
+                    manager.AddUndoableAction(new TextBoxUndoOperation((TextBoxBase) sender, e.UndoAction), e.UndoAction);
+                };
             }
             var toggleButton = o as ToggleButton;
             if (toggleButton != null)

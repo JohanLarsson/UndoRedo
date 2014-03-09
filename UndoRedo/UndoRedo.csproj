@@ -65,7 +65,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\BindingExt.cs" />
+    <Compile Include="Data\History.cs" />
+    <Compile Include="Data\HistoryPoint.cs" />
     <Compile Include="Data\UndoManager.cs" />
+    <Compile Include="Data\UpdateReason.cs" />
     <Compile Include="Dto.cs" />
     <Compile Include="View\IUndoOperation.cs" />
     <Compile Include="View\TextBoxUndoOperation.cs" />

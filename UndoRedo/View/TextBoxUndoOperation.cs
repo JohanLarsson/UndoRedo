@@ -1,4 +1,4 @@
-﻿namespace UndoRedo
+﻿namespace UndoRedo.View
 {
     using System;
     using System.Windows.Controls;
