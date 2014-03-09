@@ -32,11 +32,7 @@
             var textBoxBase = control as TextBoxBase;
             if (textBoxBase != null)
                 return Create(textBoxBase, value, property, updateReason);
-            var toggleButton = control as ToggleButton;
-            if (toggleButton != null)
-                return new HistoryPoint(toggleButton, value, property, updateReason);
-            throw new NotImplementedException("message");
-
+            return new HistoryPoint(control, value, property, updateReason);
         }
         public static TextBoxHistoryPoint Create(TextBoxBase textBox, object value, DependencyProperty property, UpdateReason updateReason)
         {

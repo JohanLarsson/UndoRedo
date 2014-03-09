@@ -77,6 +77,13 @@
                 manager._controls.Add(toggleButton);
                 toggleButton.DataContextChanged += (sender, _) => Subscribe((ToggleButton) sender, ToggleButton.IsCheckedProperty);
             }
+
+            var selector = o as Selector;
+            if (selector != null)
+            {
+                manager._controls.Add(selector);
+                selector.DataContextChanged += (sender, _) => Subscribe((Selector)sender, Selector.SelectedItemProperty);
+            }
         }
         private static void Subscribe(Control control, DependencyProperty property)
         {

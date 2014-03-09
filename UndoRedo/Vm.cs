@@ -10,6 +10,8 @@
 
     public class Vm : INotifyPropertyChanged
     {
+        private bool _isChecked;
+
         public Vm()
         {
             Dto1 = new Dto();
@@ -24,6 +26,17 @@
         public Dto Dto2 { get; private set; }
         public Dto Dto3 { get; private set; }
         public Dto Dto4 { get; private set; }
+
+        public bool IsChecked
+        {
+            get { return _isChecked; }
+            set
+            {
+                if (value.Equals(_isChecked)) return;
+                _isChecked = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ObservableCollection<UndoManagerVm> UndoManagerVms { get; private set; }
 
