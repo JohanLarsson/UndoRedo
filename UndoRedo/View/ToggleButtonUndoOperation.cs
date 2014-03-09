@@ -21,5 +21,9 @@
             Sender.IsChecked = OldValue;
             Sender.Focus();
         }
+        public void Redo()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

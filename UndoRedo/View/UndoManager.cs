@@ -10,9 +10,8 @@
 
     public class UndoManager
     {
-        readonly Stack<IUndoOperation> _undoStack = new Stack<IUndoOperation>();
-        readonly Stack<IUndoOperation> _redoStack = new Stack<IUndoOperation>();
-        private static readonly Dictionary<string, UndoManager> UndoManagers = new Dictionary<string, UndoManager>();
+        private readonly History _history = new History();
+        public static readonly Dictionary<string, UndoManager> UndoManagers = new Dictionary<string, UndoManager>();
         public static readonly DependencyProperty UndoScopeNameProperty = DependencyProperty.RegisterAttached(
             "UndoScopeName",
             typeof(string),
@@ -22,6 +21,13 @@
                     FrameworkPropertyMetadataOptions.Inherits,
                     OnUseGlobalUndoRedoScopeChanged));
 
+        public History History
+        {
+            get
+            {
+                return _history;
+            }
+        }
         public static void SetUndoScopeName(DependencyObject o, string name)
         {
             o.SetValue(UndoScopeNameProperty, name);
@@ -55,7 +61,7 @@
             {
                 textBox.TextChanged += (sender, e) =>
                 {
-                    manager.AddUndoableAction(new TextBoxUndoOperation((TextBoxBase) sender, e.UndoAction), e.UndoAction);
+                    manager._history.Add(new TextBoxUndoOperation((TextBoxBase) sender, e));
                 };
             }
             var toggleButton = o as ToggleButton;
@@ -68,13 +74,13 @@
         {
             if (e.Command == ApplicationCommands.Undo)
             {
-                e.CanExecute = _undoStack.Any();
+                e.CanExecute = _history.CanUndo;
                 e.Handled = true;
             }
 
             if (e.Command == ApplicationCommands.Redo)
             {
-                e.CanExecute = _redoStack.Any();
+                e.CanExecute = _history.CanRedo;
                 e.Handled = true;
             }
         }
@@ -82,41 +88,15 @@
         {
             if (e.Command == ApplicationCommands.Undo)
             {
-                Undo();
+                _history.Undo();
                 e.Handled = true;
             }
 
             if (e.Command == ApplicationCommands.Redo)
             {
-                Redo();
+                _history.Redo();
                 e.Handled = true;
             }
-        }
-        private void AddUndoableAction(IUndoOperation undoOperation, UndoAction action)
-        {
-            if (action == UndoAction.Undo)
-            {
-                _redoStack.Push(undoOperation);
-            }
-            else if (action == UndoAction.Redo)
-            {
-                _undoStack.Push(undoOperation);
-            }
-            else
-            {
-                _undoStack.Push(undoOperation);
-                _redoStack.Clear();
-            }
-        }
-        public void Undo()
-        {
-            IUndoOperation op = _undoStack.Pop();
-            op.Undo();
-        }
-        public void Redo()
-        {
-            IUndoOperation op = _redoStack.Pop();
-            op.Undo();
         }
     }
 }

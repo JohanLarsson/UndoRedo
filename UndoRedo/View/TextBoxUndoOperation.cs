@@ -6,21 +6,23 @@
 
     public class TextBoxUndoOperation : IUndoOperation
     {
-        public TextBoxUndoOperation(TextBoxBase sender, UndoAction action)
+        public TextBoxUndoOperation(TextBoxBase sender, TextChangedEventArgs args)
         {
             Sender = sender;
-            Action = action;
+            Args = args;
             Timestamp = DateTime.UtcNow;
         }
         public TextBoxBase Sender { get; private set; }
-        public UndoAction Action { get; private set; }
+        public TextChangedEventArgs Args { get; private set; }
         public DateTime Timestamp { get; private set; }
         public void Undo()
         {
-            if (Action != UndoAction.Undo)
-                Sender.Undo();
-            else if (Action != UndoAction.Redo)
-                Sender.Redo();
+            Sender.Undo();
+            Sender.Focus();
+        }
+        public void Redo()
+        {
+            Sender.Redo();
             Sender.Focus();
         }
     }

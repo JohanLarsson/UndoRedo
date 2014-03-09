@@ -6,5 +6,6 @@
     {
         DateTime Timestamp { get; }
         void Undo();
+        void Redo();
     }
 }

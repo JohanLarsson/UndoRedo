@@ -7,12 +7,16 @@
         xmlns:data="clr-namespace:UndoRedo.Data"
         xmlns:view="clr-namespace:UndoRedo.View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525"
+        Title="MainWindow" Height="350" Width="600"
         d:DataContext="{d:DesignInstance undoRedo:Vm}">
     <Window.Resources>
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+        </Style>
         <DataTemplate x:Key="DtoTemplate" DataType="{x:Type undoRedo:Dto}">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -28,27 +32,54 @@
                 <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Value2}"/>
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="IsChecked" Margin="0,0,10,0"/>
                 <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding IsChecked}" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="SelectedDummyEnum"/>
+                <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding EnumValues}" SelectedItem="{Binding SelectedDummyEnum}"/>
             </Grid>
         </DataTemplate>
     </Window.Resources>
-    <WrapPanel>
-        <GroupBox Header="Group1" view:UndoManager.UndoScopeName="Group1">
-            <ContentPresenter Content="{Binding Dto1}" ContentTemplate="{StaticResource DtoTemplate}"/>
-        </GroupBox>
-        
-        <GroupBox Header="Group2" view:UndoManager.UndoScopeName="Group2">
-            <ContentPresenter Content="{Binding Dto2}" ContentTemplate="{StaticResource DtoTemplate}"/>
-        </GroupBox>
-        
-        <GroupBox Header="Group1 (Shared Scope)" view:UndoManager.UndoScopeName="Group1">
-            <ContentPresenter Content="{Binding Dto3}" ContentTemplate="{StaticResource DtoTemplate}"/>
-        </GroupBox>
-        
-        <GroupBox Header="Listening to inpc" 
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <WrapPanel Grid.Row="0">
+            <GroupBox Header="Group1" view:UndoManager.UndoScopeName="Group1">
+                <ContentPresenter Content="{Binding Dto1}" ContentTemplate="{StaticResource DtoTemplate}"/>
+            </GroupBox>
+
+            <GroupBox Header="Group2" view:UndoManager.UndoScopeName="Group2">
+                <ContentPresenter Content="{Binding Dto2}" ContentTemplate="{StaticResource DtoTemplate}"/>
+            </GroupBox>
+
+            <GroupBox Header="Group1 (Shared Scope)" view:UndoManager.UndoScopeName="Group1">
+                <ContentPresenter Content="{Binding Dto3}" ContentTemplate="{StaticResource DtoTemplate}"/>
+            </GroupBox>
+
+            <GroupBox Header="Custom implementation" 
                   data:UndoManager.UndoScopeName="Data" 
                   BorderBrush="Red">
-            <ContentPresenter Content="{Binding Dto4}" ContentTemplate="{StaticResource DtoTemplate}"/>
-        </GroupBox>
-    </WrapPanel>
+                <ContentPresenter Content="{Binding Dto4}" ContentTemplate="{StaticResource DtoTemplate}"/>
+            </GroupBox>
+        </WrapPanel>
+        
+        <ListBox Grid.Row="1" ItemsSource="{Binding UndoManagerVms}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type undoRedo:UndoManagerVm}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}"/>
+                            <TextBlock Text="{Binding Manager.History.CanUndo, StringFormat='Can undo: {0}'}"/>
+                            <TextBlock Text="{Binding Manager.History.CanRedo, StringFormat='Can redo: {0}'}"/>
+                        </StackPanel>
+                    </Grid>
+
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
 
 </Window>

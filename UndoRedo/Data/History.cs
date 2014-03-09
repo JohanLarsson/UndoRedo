@@ -37,7 +37,7 @@
             var historyPoint = _undoStack.Pop();
             _redoStack.Push(historyPoint);
             var value = UndoValue(historyPoint.Control);
-            historyPoint.Control.SetCurrentValue(property, value);
+            historyPoint.Control.SetCurrentValue(historyPoint.Property, value);
             historyPoint.Control.Focus();
         }
         public void Redo(Control control)

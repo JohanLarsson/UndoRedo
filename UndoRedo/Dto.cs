@@ -1,6 +1,9 @@
 ﻿namespace UndoRedo
 {
+    using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using System.Runtime.CompilerServices;
     using Annotations;
 
@@ -9,12 +12,14 @@
         private string _value1;
         private string _value2;
         private bool? _isChecked;
+        private DummyEnum _selectedDummyEnum;
 
         public Dto()
         {
             Value1 = "OriginalValue";
             Value2 = "OriginalValue";
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public string Value1
         {
@@ -52,7 +57,26 @@
                 OnPropertyChanged();
             }
         }
-
+        public DummyEnum SelectedDummyEnum
+        {
+            get { return _selectedDummyEnum; }
+            set
+            {
+                if (value == _selectedDummyEnum)
+                {
+                    return;
+                }
+                _selectedDummyEnum = value;
+                OnPropertyChanged();
+            }
+        }
+        public IEnumerable<DummyEnum> EnumValues
+        {
+            get
+            {
+                return Enum.GetValues(typeof(DummyEnum)).Cast<DummyEnum>();
+            }
+        }
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -62,5 +86,10 @@
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+    }
+
+    public enum DummyEnum
+    {
+        First, Second, Third
     }
 }
