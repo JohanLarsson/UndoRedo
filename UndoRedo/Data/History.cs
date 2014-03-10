@@ -14,6 +14,7 @@
         private readonly Stack<HistoryPoint> _undoStack = new Stack<HistoryPoint>();
         private readonly Stack<HistoryPoint> _redoStack = new Stack<HistoryPoint>();
         //private readonly Dictionary<Control, HistoryPoint> _currentvalues = new Dictionary<Control, HistoryPoint>();
+        public event PropertyChangedEventHandler PropertyChanged;
         public Stack<HistoryPoint> UndoStack
         {
             get
@@ -38,7 +39,7 @@
         public void Update(HistoryPoint historyPoint)
         {
             var cv = _undoStack.FirstOrDefault(x => ReferenceEquals(x.Control, historyPoint.Control));
-            if (cv != null && cv.UpdateReason != UpdateReason.DataUpdated && Equals(cv.Value, historyPoint.Value))
+            if (cv != null  && Equals(cv.Value, historyPoint.Value))
                 return;
             if (_redoStack.Any())
             {
@@ -77,6 +78,7 @@
         public void Redo(Control control)
         {
             var hp = _redoStack.Pop();
+            _undoStack.Push(HistoryPoint.Create(hp.Control, hp.CurrentValue, hp.Property, UpdateReason.Redo));
             hp.Redo();
             OnPropertyChanged("");
         }
@@ -84,12 +86,12 @@
         {
             if (IsDirty(control))
                 return true;
-            HistoryPoint up = _undoStack.FirstOrDefault(x => ReferenceEquals(x.Control, control));
+            HistoryPoint up = _undoStack.Peek();
             if (up.UpdateReason != UpdateReason.DataUpdated)
                 return true;
-            return up.Value != up.CurrentValue;
+            return !Equals(up.Value, up.CurrentValue);
         }
-        private bool IsDirty(Control control)
+        public bool IsDirty(Control control)
         {
             HistoryPoint up = _undoStack.FirstOrDefault(x => ReferenceEquals(x.Control, control));
             if (up != null)
@@ -101,8 +103,6 @@
             }
             return false;
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

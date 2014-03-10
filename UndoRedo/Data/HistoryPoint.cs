@@ -41,12 +41,12 @@
         public virtual void Undo()
         {
             Control.SetCurrentValue(Property, Value);
-            Control.Focus();
+            //Control.Focus();
         }
         public virtual void Redo()
         {
             Control.SetCurrentValue(Property, Value);
-            Control.Focus();
+            //Control.Focus();
         }
         public override string ToString()
         {

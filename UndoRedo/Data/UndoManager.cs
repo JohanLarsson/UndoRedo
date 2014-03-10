@@ -109,7 +109,7 @@
                 };
             }
         }
-        private static UndoManager GetUndoManager(Control control)
+        public static UndoManager GetUndoManager(Control control)
         {
             foreach (var undoManager in UndoManagers)
             {
