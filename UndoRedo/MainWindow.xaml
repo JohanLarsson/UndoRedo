@@ -14,7 +14,7 @@
             <Setter Property="VerticalAlignment" Value="Bottom"/>
         </Style>
         <DataTemplate x:Key="DtoTemplate" DataType="{x:Type undoRedo:Dto}">
-            <Grid Background="Transparent">
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -31,9 +31,12 @@
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Value2"/>
                 <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Value2}"/>
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="IsChecked" Margin="0,0,10,0"/>
-                <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding IsChecked}" VerticalAlignment="Center"/>
+                <CheckBox Grid.Row="2" Grid.Column="1"
+                          IsChecked="{Binding IsChecked}" VerticalAlignment="Center"/>
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="SelectedDummyEnum"/>
-                <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding EnumValues}" SelectedItem="{Binding SelectedDummyEnum}"/>
+                <ComboBox Grid.Row="3" Grid.Column="1" 
+                          ItemsSource="{Binding EnumValues}" 
+                          SelectedItem="{Binding SelectedDummyEnum}"/>
             </Grid>
         </DataTemplate>
 
@@ -58,7 +61,7 @@
 
             <GroupBox Header="Custom implementation" 
                   data:UndoManager.UndoScopeName="Data" 
-                  BorderBrush="Red">
+                  BorderBrush="Red" Focusable="True">
                 <ContentPresenter Content="{Binding Dto4}" ContentTemplate="{StaticResource DtoTemplate}"/>
             </GroupBox>
 
