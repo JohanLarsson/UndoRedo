@@ -38,8 +38,15 @@
         public void Update(HistoryPoint historyPoint)
         {
             var cv = _undoStack.FirstOrDefault(x => ReferenceEquals(x.Control, historyPoint.Control));
-            if (cv != null && Equals(cv.Value, historyPoint.Value))
+            if (cv != null && cv.UpdateReason != UpdateReason.DataUpdated && Equals(cv.Value, historyPoint.Value))
                 return;
+            if (_redoStack.Any())
+            {
+                HistoryPoint redoPoint = _redoStack.Peek();
+                if (ReferenceEquals(redoPoint.Control, historyPoint.Control) && Equals(redoPoint.Value, historyPoint.Value))
+                    return;
+            }
+
             _undoStack.Push(historyPoint);
             _redoStack.Clear();
             OnPropertyChanged("");
@@ -52,15 +59,17 @@
         {
             if (IsDirty(control))
             {
-                var cv = _undoStack.First(x => ReferenceEquals(x.Control, control));
-                _redoStack.Push(HistoryPoint.Create(control, cv.CurrentValue, cv.Property, UpdateReason.Undo));
-                cv.Undo();
+                var hp = _undoStack.First(x => ReferenceEquals(x.Control, control));
+                _redoStack.Push(HistoryPoint.Create(control, hp.CurrentValue, hp.Property, UpdateReason.Undo));
+                hp.Undo();
             }
             else
             {
-                var historyPoint = _undoStack.Pop();
-                _redoStack.Push(historyPoint);
-                historyPoint.Undo();
+                var hp = (_undoStack.Peek().UpdateReason != UpdateReason.DataUpdated)
+                    ? _undoStack.Pop()
+                    : _undoStack.Peek();
+                _redoStack.Push(HistoryPoint.Create(hp.Control, hp.CurrentValue, hp.Property, UpdateReason.Undo));
+                hp.Undo();
             }
 
             OnPropertyChanged("");
@@ -75,12 +84,10 @@
         {
             if (IsDirty(control))
                 return true;
-            if (_undoStack.Any())
-            {
-                var historyPoint = _undoStack.Peek();
-                return historyPoint.UpdateReason != UpdateReason.DataUpdated;
-            }
-            return false;
+            HistoryPoint up = _undoStack.FirstOrDefault(x => ReferenceEquals(x.Control, control));
+            if (up.UpdateReason != UpdateReason.DataUpdated)
+                return true;
+            return up.Value != up.CurrentValue;
         }
         private bool IsDirty(Control control)
         {

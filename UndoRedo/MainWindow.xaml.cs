@@ -13,15 +13,5 @@
             InitializeComponent();
             DataContext = new Vm();
         }
-
-        private void Binding_OnSourceUpdated(object sender, DataTransferEventArgs e)
-        {
-            
-        }
-
-        private void Binding_OnTargetUpdated(object sender, DataTransferEventArgs e)
-        {
-
-        }
     }
 }

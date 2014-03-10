@@ -61,8 +61,7 @@
                   BorderBrush="Red">
                 <ContentPresenter Content="{Binding Dto4}" ContentTemplate="{StaticResource DtoTemplate}"/>
             </GroupBox>
-            <CheckBox IsChecked="{Binding IsChecked, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}" 
-                      Binding.SourceUpdated="Binding_OnSourceUpdated" Binding.TargetUpdated="Binding_OnTargetUpdated"/>
+
         </WrapPanel>
         
         <ListBox Grid.Row="1" ItemsSource="{Binding UndoManagerVms}">
@@ -71,6 +70,7 @@
                     <GroupBox Header="{Binding Timestamp}" HeaderStringFormat="HistoryPoint {0:H:mm:ss}">
                         <StackPanel>
                             <TextBlock Text="{Binding Control}"/>
+                            <TextBlock Text="{Binding Value}"/>
                             <TextBlock Text="{Binding UpdateReason}"/>
                         </StackPanel>
                     </GroupBox>

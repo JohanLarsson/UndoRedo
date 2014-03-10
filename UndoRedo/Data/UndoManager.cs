@@ -62,14 +62,7 @@
             if (textBox != null)
             {
                 manager._controls.Add(textBox);
-                if (textBox.IsInitialized)
-                {
-                    // binding = BindingOperations.GetBinding(textBox, TextBox.TextProperty);
-                }
-                else
-                {
-                    textBox.DataContextChanged += (sender, _) => Subscribe((TextBoxBase)sender, TextBox.TextProperty);
-                }
+                textBox.DataContextChanged += (sender, _) => Subscribe((TextBoxBase)sender, TextBox.TextProperty);
             }
             var toggleButton = o as ToggleButton;
             if (toggleButton != null)
