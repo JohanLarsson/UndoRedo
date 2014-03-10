@@ -14,7 +14,7 @@
             <Setter Property="VerticalAlignment" Value="Bottom"/>
         </Style>
         <DataTemplate x:Key="DtoTemplate" DataType="{x:Type undoRedo:Dto}">
-            <Grid>
+            <Grid Background="Transparent">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -44,7 +44,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <WrapPanel Grid.Row="0">
-            <GroupBox Header="Group1" view:UndoManager.UndoScopeName="Group1">
+            <!--<GroupBox Header="Group1" view:UndoManager.UndoScopeName="Group1">
                 <ContentPresenter Content="{Binding Dto1}" ContentTemplate="{StaticResource DtoTemplate}"/>
             </GroupBox>
 
@@ -54,7 +54,7 @@
 
             <GroupBox Header="Group1 (Shared Scope)" view:UndoManager.UndoScopeName="Group1">
                 <ContentPresenter Content="{Binding Dto3}" ContentTemplate="{StaticResource DtoTemplate}"/>
-            </GroupBox>
+            </GroupBox>-->
 
             <GroupBox Header="Custom implementation" 
                   data:UndoManager.UndoScopeName="Data" 

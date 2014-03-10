@@ -68,7 +68,7 @@
             if (toggleButton != null)
             {
                 manager._controls.Add(toggleButton);
-                toggleButton.DataContextChanged += (sender, _) => Subscribe((ToggleButton) sender, ToggleButton.IsCheckedProperty);
+                toggleButton.DataContextChanged += (sender, _) => Subscribe((ToggleButton)sender, ToggleButton.IsCheckedProperty);
             }
 
             var selector = o as Selector;

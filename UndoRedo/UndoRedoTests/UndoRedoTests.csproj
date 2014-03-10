@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComboBoxTests.cs" />
-    <Compile Include="UpdateSourceAndTArget.cs" />
     <Compile Include="FakeVm.cs" />
     <Compile Include="Misc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

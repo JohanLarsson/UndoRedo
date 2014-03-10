@@ -5,8 +5,8 @@
 
     public class TextBoxHistoryPoint : HistoryPoint
     {
-        public TextBoxHistoryPoint(TextBoxBase control, object value, DependencyProperty property, UpdateReason updateReason)
-            : base(control, value, property, updateReason)
+        public TextBoxHistoryPoint(TextBoxBase textbox, object value, DependencyProperty property, UpdateReason updateReason)
+            : base(textbox, value, property, updateReason)
         {
         }
         public override void Undo()
@@ -18,6 +18,14 @@
         {
             ((TextBoxBase)Control).Redo();
             Control.Focus();
+        }
+        public override HistoryPoint ToUndoPoint()
+        {
+            return new TextBoxHistoryPoint((TextBoxBase) Control, CurrentValue, Property, UpdateReason.Undo);
+        }
+        public override HistoryPoint ToRedoPoint()
+        {
+            return new TextBoxHistoryPoint((TextBoxBase) Control, Value, Property, UpdateReason.Undo);
         }
     }
 }

@@ -7,7 +7,7 @@
 
     public class HistoryPoint
     {
-        protected HistoryPoint(Control control, object value, DependencyProperty property, UpdateReason updateReason)
+        public HistoryPoint(Control control, object value, DependencyProperty property, UpdateReason updateReason)
         {
             Timestamp = DateTime.UtcNow;
             Control = control;
@@ -27,17 +27,6 @@
         }
         public DependencyProperty Property { get; private set; }
         public UpdateReason UpdateReason { get; private set; }
-        public static HistoryPoint Create(Control control, object value, DependencyProperty property, UpdateReason updateReason)
-        {
-            var textBoxBase = control as TextBoxBase;
-            if (textBoxBase != null)
-                return Create(textBoxBase, value, property, updateReason);
-            return new HistoryPoint(control, value, property, updateReason);
-        }
-        public static TextBoxHistoryPoint Create(TextBoxBase textBox, object value, DependencyProperty property, UpdateReason updateReason)
-        {
-            return new TextBoxHistoryPoint(textBox, value, property, updateReason);
-        }
         public virtual void Undo()
         {
             Control.SetCurrentValue(Property, Value);
@@ -47,6 +36,14 @@
         {
             Control.SetCurrentValue(Property, Value);
             //Control.Focus();
+        }
+        public virtual HistoryPoint ToUndoPoint()
+        {
+            return new HistoryPoint(Control, CurrentValue, Property, UpdateReason.Undo);
+        }
+        public virtual HistoryPoint ToRedoPoint()
+        {
+            return new HistoryPoint(Control, CurrentValue, Property, UpdateReason.Undo);
         }
         public override string ToString()
         {
