@@ -8,7 +8,7 @@
         xmlns:view="clr-namespace:UndoRedo.View"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="600"
-        d:DataContext="{d:DesignInstance undoRedo:Vm}">
+        d:DataContext="{d:DesignInstance undoRedo:Vm}" >
     <Window.Resources>
         <Style TargetType="{x:Type TextBlock}">
             <Setter Property="VerticalAlignment" Value="Bottom"/>
@@ -60,9 +60,13 @@
             </GroupBox>-->
 
             <GroupBox Header="Custom implementation" 
-                  data:UndoManager.UndoScopeName="Data" 
-                  BorderBrush="Red" Focusable="True">
+                  data:UndoManager.UndoScopeName="Data"
+                  BorderBrush="Red" Background="Transparent" Focusable="True">
                 <ContentPresenter Content="{Binding Dto4}" ContentTemplate="{StaticResource DtoTemplate}"/>
+                <GroupBox.InputBindings>
+                    <KeyBinding Modifiers="Control" Key="Z" Command="Undo"/>
+                    <KeyBinding Modifiers="Control" Key="Y" Command="Undo"/>
+                </GroupBox.InputBindings>
             </GroupBox>
 
         </WrapPanel>
