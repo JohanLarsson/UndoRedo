@@ -14,6 +14,7 @@
     {
         private readonly Stack<HistoryPoint> _undoStack = new Stack<HistoryPoint>();
         private readonly Stack<HistoryPoint> _redoStack = new Stack<HistoryPoint>();
+        private TimeSpan _mergeTime = TimeSpan.FromSeconds(5);
         public event PropertyChangedEventHandler PropertyChanged;
         public Stack<HistoryPoint> UndoStack
         {
@@ -41,6 +42,11 @@
             var cv = _undoStack.FirstOrDefault(x => ReferenceEquals(x.Control, historyPoint.Control));
             if (cv != null && Equals(cv.Value, historyPoint.Value))
                 return;
+            if (CanMerge(historyPoint, UndoStack, _mergeTime))
+            {
+                Merge(historyPoint, UndoStack, _mergeTime);
+                return;
+            }
             if (_redoStack.Any())
             {
                 HistoryPoint redoPoint = _redoStack.Peek();
@@ -71,8 +77,8 @@
         public void Update(Control control, object value, DependencyProperty property, UpdateReason reason)
         {
             var textBoxBase = control as TextBoxBase;
-            if(textBoxBase!=null)
-                Update(new TextBoxHistoryPoint(textBoxBase,value,property,reason));
+            if (textBoxBase != null)
+                Update(new TextBoxHistoryPoint(textBoxBase, value, property, reason));
             else
                 Update(new HistoryPoint(control, value, property, reason));
         }
@@ -129,6 +135,23 @@
         {
             var handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+        private bool CanMerge(HistoryPoint newPoint, Stack<HistoryPoint> undostack, TimeSpan mergeTime)
+        {
+            if (!undostack.Any())
+                return false;
+            var hp = undostack.Peek();
+            if (!ReferenceEquals(hp.Control, newPoint.Control))
+                return false;
+            var dt = newPoint.Timestamp - hp.Timestamp;
+            return dt < mergeTime;
+        }
+        private void Merge(HistoryPoint newPoint, Stack<HistoryPoint> undostack, TimeSpan mergeTime)
+        {
+            if(!CanMerge(newPoint, undostack, mergeTime))
+                throw new InvalidOperationException("Cannot merge call CanMerge() before");
+            var hp = undostack.Pop();
+            undostack.Push(newPoint);
         }
     }
 }
