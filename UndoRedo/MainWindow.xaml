@@ -41,13 +41,22 @@
         </DataTemplate>
 
     </Window.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <WrapPanel Grid.Row="0">
-            <!--<GroupBox Header="Group1" view:UndoManager.UndoScopeName="Group1">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem>
+                <Button Command="Undo">Undo</Button>
+            </MenuItem>
+            <MenuItem>
+                <Button Command="Redo">Redo</Button>
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <WrapPanel Grid.Row="0">
+                <!--<GroupBox Header="Group1" view:UndoManager.UndoScopeName="Group1">
                 <ContentPresenter Content="{Binding Dto1}" ContentTemplate="{StaticResource DtoTemplate}"/>
             </GroupBox>
 
@@ -58,53 +67,62 @@
             <GroupBox Header="Group1 (Shared Scope)" view:UndoManager.UndoScopeName="Group1">
                 <ContentPresenter Content="{Binding Dto3}" ContentTemplate="{StaticResource DtoTemplate}"/>
             </GroupBox>-->
-
-            <GroupBox Header="Custom implementation" 
-                  data:UndoManager.UndoScopeName="Data"
+                <GroupBox Header="Undoscope 1" 
+                  data:UndoManager.UndoScopeName="Data1"
+                  BorderBrush="Blue" Background="Transparent" Focusable="True">
+                    <ContentPresenter Content="{Binding Dto1}" ContentTemplate="{StaticResource DtoTemplate}"/>
+                    <GroupBox.InputBindings>
+                        <KeyBinding Modifiers="Control" Key="Z" Command="Undo"/>
+                        <KeyBinding Modifiers="Control" Key="Y" Command="Undo"/>
+                    </GroupBox.InputBindings>
+                </GroupBox>
+                
+                <GroupBox Header="Undoscope 2" 
+                  data:UndoManager.UndoScopeName="Data2"
                   BorderBrush="Red" Background="Transparent" Focusable="True">
-                <ContentPresenter Content="{Binding Dto4}" ContentTemplate="{StaticResource DtoTemplate}"/>
-                <GroupBox.InputBindings>
-                    <KeyBinding Modifiers="Control" Key="Z" Command="Undo"/>
-                    <KeyBinding Modifiers="Control" Key="Y" Command="Undo"/>
-                </GroupBox.InputBindings>
-            </GroupBox>
+                    <ContentPresenter Content="{Binding Dto2}" ContentTemplate="{StaticResource DtoTemplate}"/>
+                    <GroupBox.InputBindings>
+                        <KeyBinding Modifiers="Control" Key="Z" Command="Undo"/>
+                        <KeyBinding Modifiers="Control" Key="Y" Command="Undo"/>
+                    </GroupBox.InputBindings>
+                </GroupBox>
 
-        </WrapPanel>
-        
-        <ListBox Grid.Row="1" ItemsSource="{Binding UndoManagerVms}">
-            <ListBox.Resources>
-                <DataTemplate DataType="{x:Type data:HistoryPoint}">
-                    <GroupBox Header="{Binding Timestamp}" HeaderStringFormat="HistoryPoint {0:H:mm:ss}">
-                        <StackPanel>
-                            <TextBlock Text="{Binding Control}"/>
-                            <TextBlock Text="{Binding Value}"/>
-                            <TextBlock Text="{Binding UpdateReason}"/>
-                        </StackPanel>
-                    </GroupBox>
+            </WrapPanel>
 
-                </DataTemplate>
-            </ListBox.Resources>
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type undoRedo:UndoManagerVm}">
-                    <GroupBox Header="{Binding Name}">
-                        <StackPanel Orientation="Horizontal">
-                            <GroupBox Header="UndoStack">
-                                <StackPanel>
-                                    <!--<TextBlock Text="{Binding Manager.History.CanUndo, StringFormat='Can undo: {0}'}"/>-->
-                                    <ListBox ItemsSource="{Binding UndoStack}"/>
-                                </StackPanel>
-                            </GroupBox>
-                            <GroupBox Header="RedoStack">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding Manager.History.CanRedo, StringFormat='Can redo: {0}'}"/>
-                                    <ListBox ItemsSource="{Binding RedoStack}"/>
-                                </StackPanel>
-                            </GroupBox>
-                        </StackPanel>
-                    </GroupBox>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-    </Grid>
+            <ListBox Grid.Row="1" ItemsSource="{Binding UndoManagerVms}">
+                <ListBox.Resources>
+                    <DataTemplate DataType="{x:Type data:HistoryPoint}">
+                        <GroupBox Header="{Binding Timestamp}" HeaderStringFormat="HistoryPoint {0:H:mm:ss}">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Control}"/>
+                                <TextBlock Text="{Binding Value}"/>
+                                <TextBlock Text="{Binding UpdateReason}"/>
+                            </StackPanel>
+                        </GroupBox>
 
+                    </DataTemplate>
+                </ListBox.Resources>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type undoRedo:UndoManagerVm}">
+                        <GroupBox Header="{Binding Name}">
+                            <StackPanel Orientation="Horizontal">
+                                <GroupBox Header="UndoStack">
+                                    <StackPanel>
+                                        <!--<TextBlock Text="{Binding Manager.History.CanUndo, StringFormat='Can undo: {0}'}"/>-->
+                                        <ListBox ItemsSource="{Binding UndoStack}"/>
+                                    </StackPanel>
+                                </GroupBox>
+                                <GroupBox Header="RedoStack">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Manager.History.CanRedo, StringFormat='Can redo: {0}'}"/>
+                                        <ListBox ItemsSource="{Binding RedoStack}"/>
+                                    </StackPanel>
+                                </GroupBox>
+                            </StackPanel>
+                        </GroupBox>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </DockPanel>
 </Window>

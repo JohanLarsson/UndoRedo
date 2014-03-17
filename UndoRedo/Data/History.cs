@@ -14,7 +14,7 @@
     {
         private readonly Stack<HistoryPoint> _undoStack = new Stack<HistoryPoint>();
         private readonly Stack<HistoryPoint> _redoStack = new Stack<HistoryPoint>();
-        private TimeSpan _mergeTime = TimeSpan.FromSeconds(5);
+        private TimeSpan _mergeTime = TimeSpan.FromSeconds(1);
         public event PropertyChangedEventHandler PropertyChanged;
         public Stack<HistoryPoint> UndoStack
         {
