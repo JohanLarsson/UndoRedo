@@ -51,6 +51,7 @@
     <Compile Include="Misc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingleTextBoxTests.cs" />
+    <Compile Include="UpdateSourceAndTarget.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
