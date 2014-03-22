@@ -73,7 +73,7 @@
                     <ContentPresenter Content="{Binding Dto1}" ContentTemplate="{StaticResource DtoTemplate}"/>
                     <GroupBox.InputBindings>
                         <KeyBinding Modifiers="Control" Key="Z" Command="Undo"/>
-                        <KeyBinding Modifiers="Control" Key="Y" Command="Undo"/>
+                        <KeyBinding Modifiers="Control" Key="Y" Command="Redo"/>
                     </GroupBox.InputBindings>
                 </GroupBox>
                 
@@ -83,7 +83,7 @@
                     <ContentPresenter Content="{Binding Dto2}" ContentTemplate="{StaticResource DtoTemplate}"/>
                     <GroupBox.InputBindings>
                         <KeyBinding Modifiers="Control" Key="Z" Command="Undo"/>
-                        <KeyBinding Modifiers="Control" Key="Y" Command="Undo"/>
+                        <KeyBinding Modifiers="Control" Key="Y" Command="Redo"/>
                     </GroupBox.InputBindings>
                 </GroupBox>
 
