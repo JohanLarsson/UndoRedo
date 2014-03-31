@@ -42,11 +42,7 @@
             var cv = _undoStack.FirstOrDefault(x => ReferenceEquals(x.Control, historyPoint.Control));
             if (cv != null && Equals(cv.Value, historyPoint.Value))
                 return;
-            if (CanMerge(historyPoint, UndoStack, _mergeTime))
-            {
-                Merge(historyPoint, UndoStack, _mergeTime);
-                return;
-            }
+
             if (_redoStack.Any())
             {
                 HistoryPoint redoPoint = _redoStack.Peek();
@@ -69,7 +65,11 @@
                 if (ReferenceEquals(redoPoint.Control, historyPoint.Control) && Equals(redoPoint.Value, historyPoint.Value))
                     return;
             }
-
+            if (CanMerge(historyPoint, UndoStack, _mergeTime))
+            {
+                Merge(historyPoint, UndoStack, _mergeTime);
+                return;
+            }
             _undoStack.Push(historyPoint);
             _redoStack.Clear();
             OnPropertyChanged("");
@@ -112,6 +112,8 @@
         {
             if (IsDirty(control))
                 return true;
+            if (!_undoStack.Any())
+                return false;
             HistoryPoint up = _undoStack.Peek();
             if (up.UpdateReason != UpdateReason.DataUpdated)
                 return true;

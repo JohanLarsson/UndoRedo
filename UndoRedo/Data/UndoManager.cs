@@ -62,20 +62,20 @@
             if (textBox != null)
             {
                 manager._controls.Add(textBox);
-                textBox.DataContextChanged += (sender, _) => Subscribe((TextBoxBase)sender, TextBox.TextProperty);
+                textBox.Loaded += (sender, _) => Subscribe((TextBoxBase)sender, TextBox.TextProperty);
             }
             var toggleButton = o as ToggleButton;
             if (toggleButton != null)
             {
                 manager._controls.Add(toggleButton);
-                toggleButton.DataContextChanged += (sender, _) => Subscribe((ToggleButton)sender, ToggleButton.IsCheckedProperty);
+                toggleButton.Loaded += (sender, _) => Subscribe((ToggleButton)sender, ToggleButton.IsCheckedProperty);
             }
 
             var selector = o as Selector;
             if (selector != null)
             {
                 manager._controls.Add(selector);
-                selector.DataContextChanged += (sender, _) => Subscribe((Selector)sender, Selector.SelectedItemProperty);
+                selector.Loaded += (sender, _) => Subscribe((Selector)sender, Selector.SelectedItemProperty);
             }
         }
         private static void Subscribe(Control control, DependencyProperty property)

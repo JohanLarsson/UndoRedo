@@ -1,8 +1,109 @@
 ﻿<Application x:Class="UndoRedo.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:undoRedo="clr-namespace:UndoRedo"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <DataTemplate x:Key="DtoTemplate" DataType="{x:Type undoRedo:Dto}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Value1"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Value1}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Value2"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Value2}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="IsChecked" Margin="0,0,10,0"/>
+                <CheckBox Grid.Row="2" Grid.Column="1"
+                          IsChecked="{Binding IsChecked}" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="SelectedDummyEnum"/>
+                <ComboBox Grid.Row="3" Grid.Column="1" 
+                          ItemsSource="{Binding EnumValues}" 
+                          SelectedItem="{Binding SelectedDummyEnum}"/>
+            </Grid>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="DummyTemplate" DataType="{x:Type undoRedo:DummyValues}">
+            <StackPanel>
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="15" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="StartPosition" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="1"
+                       HorizontalAlignment="Center" Margin="0,0,0,25" />
+                    <TextBlock Text=" EndPosition" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="1"
+                       HorizontalAlignment="Center" Margin="0,0,0,25" />
+                    <TextBlock Text="Zo" Grid.Column="0" Grid.Row="1" Margin="0,0,0,0" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Grid.Row="1" Margin="15,0,0,0" HorizontalContentAlignment="Right"
+                               VerticalAlignment="Center" Width="170" 
+                               Text="{Binding StartPositions.Zo}" />
+                    <TextBox Grid.Column="3" Grid.Row="1" Margin="15,0,0,0" HorizontalContentAlignment="Right"
+                               VerticalAlignment="Center" Width="170"  
+                               Text="{Binding EndPositions.Zo}" />
+                    <TextBlock Text="Zi" Grid.Column="0" Grid.Row="2" Margin="0,15,0,0" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Grid.Row="2" Margin="15,15,0,0"
+                               HorizontalContentAlignment="Right" Width="170"  
+                               Text="{Binding StartPositions.Zi}" />
+                    <TextBox Grid.Column="3" Grid.Row="2" Margin="15,15,0,0"
+                               HorizontalContentAlignment="Right" Width="170"  
+                               Text="{Binding EndPositions.Zi}" />
+                    <TextBlock Text="Wo" Grid.Column="0" Grid.Row="3" Margin="0,15,0,0" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Grid.Row="3" Margin="15,15,0,0"
+                               HorizontalContentAlignment="Right" Width="170"  
+                               Text="{Binding StartPositions.Wo}" />
+                    <TextBox Grid.Column="3" Grid.Row="3" Margin="15,15,0,0"
+                               HorizontalContentAlignment="Right" Width="170"  
+                               Text="{Binding EndPositions.Wo}" />
+                    <TextBlock Text="Wi" Grid.Column="0" Grid.Row="4" Margin="0,15,0,0" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Grid.Row="4" Margin="15,15,0,0"
+                               HorizontalContentAlignment="Right" Width="170"  
+                               Text="{Binding StartPositions.Wi}" />
+                    <TextBox Grid.Column="3" Grid.Row="4" Margin="15,15,0,0"
+                               HorizontalContentAlignment="Right" Width="170"  
+                               Text="{Binding EndPositions.Wi}" />
+                    <TextBlock Text="P" Grid.Column="0" Grid.Row="5" Margin="0,15,0,0" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Grid.Row="5" Margin="15,15,0,0"
+                               HorizontalContentAlignment="Right" Width="170"  
+                               Text="{Binding StartPositions.P}" />
+                    <TextBox Grid.Column="3" Grid.Row="5" Margin="15,15,0,0"
+                               HorizontalContentAlignment="Right" Width="170"  
+                               Text="{Binding EndPositions.P}" />
+                    <TextBlock Text="Q" Grid.Column="0" Grid.Row="6" Margin="0,15,0,0" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Grid.Row="6" Margin="15,15,0,0"
+                               HorizontalContentAlignment="Right" Width="170"  
+                               Text="{Binding StartPositions.Q}" />
+                    <TextBox Grid.Column="3" Grid.Row="6" Margin="15,15,0,0"
+                               HorizontalContentAlignment="Right" Width="170"  
+                               Text="{Binding EndPositions.Q}" />
+                </Grid>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Undo" Command="Undo"/>
+                    <Button Content="Redo" Command="Redo"/>
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
     </Application.Resources>
 </Application>

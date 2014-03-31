@@ -18,7 +18,10 @@
             Dto2 = new Dto();
             Dto3 = new Dto();
             Dto4 = new Dto();
-            UndoManagerVms= new ObservableCollection<UndoManagerVm>(Data.UndoManager.UndoManagers.Select(x=>new UndoManagerVm(x.Key,x.Value)));
+            DummyPositions1 = new DummyPositions(1);
+            DummyPositions2 = new DummyPositions(3);
+
+            UndoManagerVms = new ObservableCollection<UndoManagerVm>(Data.UndoManager.UndoManagers.Select(x => new UndoManagerVm(x.Key, x.Value)));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -37,7 +40,8 @@
                 OnPropertyChanged();
             }
         }
-
+        public DummyPositions DummyPositions1 { get; private set; }
+        public DummyPositions DummyPositions2 { get; private set; }
         public ObservableCollection<UndoManagerVm> UndoManagerVms { get; private set; }
 
         [NotifyPropertyChangedInvocator]
