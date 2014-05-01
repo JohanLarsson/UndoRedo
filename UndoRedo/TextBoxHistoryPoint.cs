@@ -1,4 +1,4 @@
-﻿namespace UndoRedo.Data
+﻿namespace UndoRedo
 {
     using System.Windows;
     using System.Windows.Controls.Primitives;

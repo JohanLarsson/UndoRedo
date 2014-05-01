@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComboBoxTests.cs" />
+    <Compile Include="DummyEnum.cs" />
     <Compile Include="FakeVm.cs" />
     <Compile Include="Misc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,8 +61,8 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UndoRedo.csproj">
-      <Project>{1e76d7cf-97a5-49fa-bd3d-086a8db4589c}</Project>
+    <ProjectReference Include="..\UndoRedo\UndoRedo.csproj">
+      <Project>{0198689B-43F2-480D-9EAA-BF898DDDB230}</Project>
       <Name>UndoRedo</Name>
     </ProjectReference>
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace UndoRedo.Data
+﻿namespace UndoRedo
 {
     using System;
     using System.Collections.Generic;
@@ -8,14 +8,15 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
-    using Annotations;
 
-    public class History : INotifyPropertyChanged
+    public class History : IHistory
     {
         private readonly Stack<HistoryPoint> _undoStack = new Stack<HistoryPoint>();
         private readonly Stack<HistoryPoint> _redoStack = new Stack<HistoryPoint>();
         private TimeSpan _mergeTime = TimeSpan.FromSeconds(1);
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler OnClear;
+        public event EventHandler OnChanged;
+
         public Stack<HistoryPoint> UndoStack
         {
             get
@@ -37,7 +38,15 @@
                 return _redoStack.Any();
             }
         }
-        public void Update(TextBoxHistoryPoint historyPoint)
+
+        public void Clear()
+        {
+            _undoStack.Clear();
+            _redoStack.Clear();
+            OnOnClear();
+        }
+
+        internal void Update(TextBoxHistoryPoint historyPoint)
         {
             var cv = _undoStack.FirstOrDefault(x => ReferenceEquals(x.Control, historyPoint.Control));
             if (cv != null && Equals(cv.Value, historyPoint.Value))
@@ -52,9 +61,10 @@
 
             _undoStack.Push(historyPoint);
             _redoStack.Clear();
-            OnPropertyChanged("");
+            OnOnChanged();
         }
-        public void Update(HistoryPoint historyPoint)
+
+        internal void Update(HistoryPoint historyPoint)
         {
             var cv = _undoStack.FirstOrDefault(x => x.UpdateReason != UpdateReason.DataUpdated && ReferenceEquals(x.Control, historyPoint.Control));
             if (cv != null && Equals(cv.Value, historyPoint.Value))
@@ -72,9 +82,10 @@
             }
             _undoStack.Push(historyPoint);
             _redoStack.Clear();
-            OnPropertyChanged("");
+            OnOnChanged();
         }
-        public void Update(Control control, object value, DependencyProperty property, UpdateReason reason)
+
+        internal void Update(Control control, object value, DependencyProperty property, UpdateReason reason)
         {
             var textBoxBase = control as TextBoxBase;
             if (textBoxBase != null)
@@ -82,7 +93,8 @@
             else
                 Update(new HistoryPoint(control, value, property, reason));
         }
-        public void Undo(Control control)
+
+        internal void Undo(Control control)
         {
             if (IsDirty(control))
             {
@@ -98,17 +110,18 @@
                 _redoStack.Push(hp.ToUndoPoint());
                 hp.Undo();
             }
-
-            OnPropertyChanged("");
+            OnOnChanged();
         }
-        public void Redo(Control control)
+
+        internal void Redo(Control control)
         {
             var hp = _redoStack.Pop();
             _undoStack.Push(hp.ToRedoPoint());
             hp.Redo();
-            OnPropertyChanged("");
+            OnOnChanged();
         }
-        public bool CanUndo(Control control)
+
+        internal bool CanUndo(Control control)
         {
             if (IsDirty(control))
                 return true;
@@ -119,7 +132,8 @@
                 return true;
             return !Equals(up.Value, up.CurrentValue);
         }
-        public bool IsDirty(Control control)
+
+        internal bool IsDirty(Control control)
         {
             HistoryPoint up = _undoStack.FirstOrDefault(x => ReferenceEquals(x.Control, control));
             if (up != null)
@@ -131,12 +145,22 @@
             }
             return false;
         }
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnOnClear()
         {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            EventHandler handler = OnClear;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+            OnOnChanged();
+        }
+        protected virtual void OnOnChanged()
+        {
+            EventHandler handler = OnChanged;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
         private bool CanMerge(HistoryPoint newPoint, Stack<HistoryPoint> undostack, TimeSpan mergeTime)
         {
@@ -148,6 +172,7 @@
             var dt = newPoint.Timestamp - hp.Timestamp;
             return dt < mergeTime;
         }
+        
         private void Merge(HistoryPoint newPoint, Stack<HistoryPoint> undostack, TimeSpan mergeTime)
         {
             if(!CanMerge(newPoint, undostack, mergeTime))

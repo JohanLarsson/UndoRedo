@@ -9,7 +9,7 @@
     using System.Windows.Controls.Primitives;
     using System.Windows.Data;
     using NUnit.Framework;
-    using UndoRedo.Data;
+    using UndoRedo;
     [RequiresSTA]
     public class ComboBoxTests
     {

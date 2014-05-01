@@ -1,7 +1,6 @@
-﻿namespace UndoRedo
+﻿namespace UndoRedoDemo
 {
     using System.Windows;
-    using System.Windows.Data;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml

@@ -1,11 +1,12 @@
-﻿namespace UndoRedo
+﻿namespace UndoRedoDemo.Dummies
 {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.CompilerServices;
-    using Annotations;
+    using UndoRedo;
+    using UndoRedo.Annotations;
 
     public class Dto : INotifyPropertyChanged
     {
@@ -14,13 +15,16 @@
         private bool? _isChecked;
         private DummyEnum _selectedDummyEnum;
 
-        public Dto()
+        public Dto(string name)
         {
+            Name = name;
             Value1 = "OriginalValue";
             Value2 = "OriginalValue";
+            UndoManager = new UndoManagerVm(name);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public string Name { get; private set; }
         public string Value1
         {
             get { return _value1; }
@@ -77,6 +81,8 @@
                 return Enum.GetValues(typeof(DummyEnum)).Cast<DummyEnum>();
             }
         }
+
+        public UndoManagerVm UndoManager { get; private set; }
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

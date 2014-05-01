@@ -1,12 +1,12 @@
-﻿namespace UndoRedo
+﻿namespace UndoRedoDemo
 {
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.CompilerServices;
-    using System.Windows.Data;
-    using Annotations;
-    using Data;
+    using Dummies;
+    using UndoRedo;
+    using UndoRedo.Annotations;
 
     public class Vm : INotifyPropertyChanged
     {
@@ -14,14 +14,14 @@
 
         public Vm()
         {
-            Dto1 = new Dto();
-            Dto2 = new Dto();
-            Dto3 = new Dto();
-            Dto4 = new Dto();
-            DummyPositions1 = new DummyPositions(1);
-            DummyPositions2 = new DummyPositions(3);
+            Dto1 = new Dto("Dto1");
+            Dto2 = new Dto("Dto2");
+            Dto3 = new Dto("Dto3");
+            Dto4 = new Dto("Dto4");
+            DummyPositions1 = new DummyPositions(1, "DummyPositions1");
+            DummyPositions2 = new DummyPositions(3, "DummyPositions2");
 
-            UndoManagerVms = new ObservableCollection<UndoManagerVm>(Data.UndoManager.UndoManagers.Select(x => new UndoManagerVm(x.Key, x.Value)));
+            //UndoManagerVms = new ObservableCollection<UndoManagerVm>(UndoManager.UndoManagers.Select(x => new UndoManagerVm(x.Key, x.Value)));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -42,7 +42,6 @@
         }
         public DummyPositions DummyPositions1 { get; private set; }
         public DummyPositions DummyPositions2 { get; private set; }
-        public ObservableCollection<UndoManagerVm> UndoManagerVms { get; private set; }
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

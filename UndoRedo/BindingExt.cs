@@ -1,4 +1,4 @@
-﻿namespace UndoRedo.Data
+﻿namespace UndoRedo
 {
     using System;
     using System.Security;

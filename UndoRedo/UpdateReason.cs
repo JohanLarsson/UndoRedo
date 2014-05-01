@@ -1,4 +1,4 @@
-﻿namespace UndoRedo.Data
+﻿namespace UndoRedo
 {
     public enum UpdateReason
     {

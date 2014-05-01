@@ -3,7 +3,8 @@
     using System.Windows.Controls;
     using System.Windows.Data;
     using NUnit.Framework;
-    using UndoRedo.Data;
+    using UndoRedo;
+
     [RequiresSTA]
     public class SingleTextBoxTests
     {

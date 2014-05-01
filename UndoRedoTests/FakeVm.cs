@@ -5,7 +5,6 @@ namespace UndoRedoTests
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.CompilerServices;
-    using UndoRedo.Annotations;
 
     public class FakeVm : INotifyPropertyChanged
     {
@@ -49,16 +48,10 @@ namespace UndoRedoTests
             }
         }
             
-            [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             var handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-
-    public enum DummyEnum
-    {
-        First, Last, Everything
     }
 }
