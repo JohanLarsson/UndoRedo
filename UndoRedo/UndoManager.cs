@@ -27,7 +27,7 @@
 
         public UndoManager()
         {
-            _history.OnClear += (sender, args) =>  OnOnClear();
+            _history.OnClear += (sender, args) => OnOnClear();
             _history.OnChanged += (sender, args) => OnChanged();
         }
         public History History
@@ -75,7 +75,7 @@
         {
             while (_history.UndoStack.Any())
             {
-                _history.Undo(_controls.FirstOrDefault(x=>x.IsFocused));
+                _history.Undo(_controls.FirstOrDefault(x => x.IsFocused));
             }
         }
 
@@ -85,12 +85,11 @@
         }
         private static void OnScopeNameChanged(DependencyObject o, DependencyPropertyChangedEventArgs args)
         {
-            var adorner = o as Adorner;
-            if (adorner != null)
+            if (args.NewValue == null)
             {
                 return;
             }
-            if (args.OldValue != null || args.NewValue == null)
+            if (args.OldValue != null && args.NewValue != null)
             {
                 throw new NotImplementedException("Changing scopes not implemented");
             }
@@ -122,7 +121,7 @@
                 selector.Loaded += (sender, _) => Subscribe((Selector)sender, Selector.SelectedItemProperty);
             }
         }
-      
+
         private static void Subscribe(Control control, DependencyProperty property)
         {
             var binding = BindingOperations.GetBinding(control, property);
@@ -154,7 +153,7 @@
                 };
             }
         }
-      
+
         private void CanExecuteHandler(object sender, CanExecuteRoutedEventArgs e)
         {
             if (e.Command == ApplicationCommands.Undo)
@@ -169,7 +168,7 @@
                 e.Handled = true;
             }
         }
-      
+
         private void ExecutedHandler(object sender, ExecutedRoutedEventArgs e)
         {
             if (e.Command == ApplicationCommands.Undo)
