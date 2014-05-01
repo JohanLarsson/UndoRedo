@@ -135,6 +135,10 @@
 
         internal bool IsDirty(Control control)
         {
+            if (control == null)
+            {
+                return false;
+            }
             HistoryPoint up = _undoStack.FirstOrDefault(x => ReferenceEquals(x.Control, control));
             if (up != null)
             {
@@ -172,10 +176,10 @@
             var dt = newPoint.Timestamp - hp.Timestamp;
             return dt < mergeTime;
         }
-        
+
         private void Merge(HistoryPoint newPoint, Stack<HistoryPoint> undostack, TimeSpan mergeTime)
         {
-            if(!CanMerge(newPoint, undostack, mergeTime))
+            if (!CanMerge(newPoint, undostack, mergeTime))
                 throw new InvalidOperationException("Cannot merge call CanMerge() before");
             var hp = undostack.Pop();
             undostack.Push(newPoint);

@@ -71,6 +71,18 @@
             throw new ArgumentOutOfRangeException("control", "No undomanager found for control");
         }
 
+        public void UndoAll()
+        {
+            while (_history.UndoStack.Any())
+            {
+                _history.Undo(_controls.FirstOrDefault(x=>x.IsFocused));
+            }
+        }
+
+        public void Clear()
+        {
+            _history.Clear();
+        }
         private static void OnScopeNameChanged(DependencyObject o, DependencyPropertyChangedEventArgs args)
         {
             var adorner = o as Adorner;

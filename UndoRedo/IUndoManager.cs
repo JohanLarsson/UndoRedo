@@ -8,5 +8,7 @@
         event EventHandler OnUndo;
         event EventHandler OnRedo;
         event EventHandler OnClear;
+        void UndoAll();
+        void Clear();
     }
 }
