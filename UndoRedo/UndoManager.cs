@@ -8,6 +8,7 @@
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Data;
+    using System.Windows.Documents;
     using System.Windows.Input;
 
     public class UndoManager : IUndoManager
@@ -22,7 +23,7 @@
                 new FrameworkPropertyMetadata(
                     null,
                     FrameworkPropertyMetadataOptions.Inherits,
-                    OnUseGlobalUndoRedoScopeChanged));
+                    OnScopeNameChanged));
 
         public UndoManager()
         {
@@ -69,11 +70,16 @@
             }
             throw new ArgumentOutOfRangeException("control", "No undomanager found for control");
         }
-        private static void OnUseGlobalUndoRedoScopeChanged(DependencyObject o, DependencyPropertyChangedEventArgs args)
+
+        private static void OnScopeNameChanged(DependencyObject o, DependencyPropertyChangedEventArgs args)
         {
-            if (args.OldValue != null || args.NewValue == null)
+            var adorner = o as Adorner;
+            if (adorner != null)
             {
                 return;
+            }
+            if (args.OldValue != null || args.NewValue == null)
+            {
                 throw new NotImplementedException("Changing scopes not implemented");
             }
             var scopeName = (string)args.NewValue;
@@ -81,8 +87,8 @@
             var uiElement = o as UIElement;
             if (uiElement != null)
             {
-                ((UIElement)o).AddHandler(CommandManager.PreviewExecutedEvent, new ExecutedRoutedEventHandler(manager.ExecutedHandler));
-                ((UIElement)o).AddHandler(CommandManager.PreviewCanExecuteEvent, new CanExecuteRoutedEventHandler(manager.CanExecuteHandler));
+                uiElement.AddHandler(CommandManager.PreviewExecutedEvent, new ExecutedRoutedEventHandler(manager.ExecutedHandler));
+                uiElement.AddHandler(CommandManager.PreviewCanExecuteEvent, new CanExecuteRoutedEventHandler(manager.CanExecuteHandler));
             }
             var textBox = o as TextBox;
             if (textBox != null)

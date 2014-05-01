@@ -73,10 +73,10 @@
             <StackPanel>
                 <Grid >
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="15" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -90,52 +90,33 @@
 
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="StartPosition" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="1"
-                       HorizontalAlignment="Center" Margin="0,0,0,25" />
-                    <TextBlock Text=" EndPosition" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="1"
-                       HorizontalAlignment="Center" Margin="0,0,0,25" />
-                    <TextBlock Text="Zo" Grid.Column="0" Grid.Row="1" Margin="0,0,0,0" VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1" Grid.Row="1" Margin="15,0,0,0" HorizontalContentAlignment="Right"
-                               VerticalAlignment="Center" Width="170" 
-                               Text="{Binding StartValues.Value1}" />
-                    <TextBox Grid.Column="3" Grid.Row="1" Margin="15,0,0,0" HorizontalContentAlignment="Right"
-                               VerticalAlignment="Center" Width="170"  
-                               Text="{Binding EndValues.Value1}" />
-                    <TextBlock Text="Zi" Grid.Column="0" Grid.Row="2" Margin="0,15,0,0" VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1" Grid.Row="2" Margin="15,15,0,0"
-                               HorizontalContentAlignment="Right" Width="170"  
-                               Text="{Binding StartValues.Value2}" />
-                    <TextBox Grid.Column="3" Grid.Row="2" Margin="15,15,0,0"
-                               HorizontalContentAlignment="Right" Width="170"  
-                               Text="{Binding EndValues.Value2}" />
-                    <TextBlock Text="Wo" Grid.Column="0" Grid.Row="3" Margin="0,15,0,0" VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1" Grid.Row="3" Margin="15,15,0,0"
-                               HorizontalContentAlignment="Right" Width="170"  
-                               Text="{Binding StartValues.Value3}" />
-                    <TextBox Grid.Column="3" Grid.Row="3" Margin="15,15,0,0"
-                               HorizontalContentAlignment="Right" Width="170"  
-                               Text="{Binding EndValues.Value3}" />
-                    <TextBlock Text="Wi" Grid.Column="0" Grid.Row="4" Margin="0,15,0,0" VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1" Grid.Row="4" Margin="15,15,0,0"
-                               HorizontalContentAlignment="Right" Width="170"  
-                               Text="{Binding StartValues.Value4}" />
-                    <TextBox Grid.Column="3" Grid.Row="4" Margin="15,15,0,0"
-                               HorizontalContentAlignment="Right" Width="170"  
-                               Text="{Binding EndValues.Value4}" />
-                    <TextBlock Text="P" Grid.Column="0" Grid.Row="5" Margin="0,15,0,0" VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1" Grid.Row="5" Margin="15,15,0,0"
-                               HorizontalContentAlignment="Right" Width="170"  
-                               Text="{Binding StartValues.Value5}" />
-                    <TextBox Grid.Column="3" Grid.Row="5" Margin="15,15,0,0"
-                               HorizontalContentAlignment="Right" Width="170"  
-                               Text="{Binding EndValues.Value5}" />
-                    <TextBlock Text="Q" Grid.Column="0" Grid.Row="6" Margin="0,15,0,0" VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1" Grid.Row="6" Margin="15,15,0,0"
-                               HorizontalContentAlignment="Right" Width="170"  
-                               Text="{Binding StartValues.Value6}" />
-                    <TextBox Grid.Column="3" Grid.Row="6" Margin="15,15,0,0"
-                               HorizontalContentAlignment="Right" Width="170"  
-                               Text="{Binding EndValues.Value6}" />
+                    <TextBlock Text="StartPosition" Grid.Row="0" Grid.Column="1"  />
+                    <TextBlock Text=" EndPosition" Grid.Row="0" Grid.Column="2" />
+                    
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Value1" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding StartValues.Value1}" />
+                    <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding EndValues.Value1}" />
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Value2" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding StartValues.Value2}" />
+                    <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding EndValues.Value2}" />
+                    
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Value3" />
+                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding StartValues.Value3}" />
+                    <TextBox Grid.Row="3" Grid.Column="2" Text="{Binding EndValues.Value3}" />
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Value4" />
+                    <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding StartValues.Value4}" />
+                    <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding EndValues.Value4}" />
+
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Value5" />
+                    <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding StartValues.Value5}" />
+                    <TextBox Grid.Row="5" Grid.Column="2" Text="{Binding EndValues.Value5}" />
+
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Value6" />
+                    <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding StartValues.Value6}" />
+                    <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding EndValues.Value6}" />
+                    
                 </Grid>
                 <StackPanel Orientation="Horizontal">
                     <Button Content="Undo" Command="Undo"/>

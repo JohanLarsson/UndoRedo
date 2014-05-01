@@ -37,7 +37,7 @@
             </TabItem>
             <TabItem Header="DummyView2" 
                      Background="Transparent" Focusable="True" 
-                     undoRedo:UndoManager.UndoScopeName="Binding DummyPositions2.Name}">
+                     undoRedo:UndoManager.UndoScopeName="{Binding DummyPositions2.Name}">
                 <TabItem.InputBindings>
                     <KeyBinding Modifiers="Control" Key="Z" Command="Undo"/>
                     <KeyBinding Modifiers="Control" Key="Y" Command="Redo"/>
@@ -66,7 +66,7 @@
                     </GroupBox>
 
                     <GroupBox Grid.Row="0" Grid.Column="1" Header="Undoscope 2" 
-                                  undoRedo:UndoManager.UndoScopeName="Binding Dto1.Name"
+                                  undoRedo:UndoManager.UndoScopeName="{Binding Dto2.Name}"
                                   BorderBrush="Red" Background="Transparent" Focusable="True">
                         <ContentPresenter Content="{Binding Dto2}" ContentTemplate="{StaticResource DtoTemplate}"/>
                         <GroupBox.InputBindings>
